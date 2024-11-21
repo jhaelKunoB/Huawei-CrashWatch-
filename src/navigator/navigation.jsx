@@ -11,6 +11,9 @@ import StartScreen from '../screen/startScreen/StartScreen'
 import Login from '../screen/login/Login'
 import Home from '../screen/home/Home'
 import Reports from '../screen/reports/Reports'
+import Maps from '../screen/maps/Maps'
+import ViewReports from '../screen/ViewReports/ViewReports'
+import ReportView from '../screen/ReportView/ReportView';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,6 +24,7 @@ function MyStack() {
         <Stack.Navigator initialRouteName={"StartScreen"}>
             <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+             <Stack.Screen name="ReportView" component={ReportView} options={{ headerShown: false }} />
              <Stack.Screen name="Home" options={{ headerShown: false }}>
                 {props => <MyTabs {...props} />}
             </Stack.Screen>
@@ -39,10 +43,10 @@ function MyTabs() {
         }}
         tabBar={(props) => <MyTabBar {...props}/>}
       >
+        <Tab.Screen name="View" component={ViewReports} options={{ tabBarIcon: 'document-text-outline' }} />
         <Tab.Screen name="Inicio" component={Home} options={{ tabBarIcon: 'home-outline' }} />
         <Tab.Screen name="Reporte" component={Reports} options={{ tabBarIcon: 'list-outline' }} />
-        
-        
+        <Tab.Screen name="Mapa" component={Maps} options={{ tabBarIcon: 'map-outline' }} />    
       </Tab.Navigator>
     );
 }
