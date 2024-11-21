@@ -11,7 +11,7 @@ export default function ReportView() {
                     style={styles.btn}
                     onPress={() => alert('ATRAS')}
                 >
-                    <Ionicons name="arrow-back-circle-sharp" size={38} color="darkblue" />F
+                    <Ionicons name="arrow-back-circle-sharp" size={38} color="darkblue"/>
                 </TouchableOpacity>
             </View>
 
