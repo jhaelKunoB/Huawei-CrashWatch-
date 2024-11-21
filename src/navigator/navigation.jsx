@@ -11,6 +11,8 @@ import StartScreen from '../screen/startScreen/StartScreen'
 import Login from '../screen/login/Login'
 import Home from '../screen/home/Home'
 import Reports from '../screen/reports/Reports'
+import Register from '../screen/login/Register';
+import ForgotPassword from '../screen/login/ForgotPassword';
 import Maps from '../screen/maps/Maps'
 import ViewReports from '../screen/ViewReports/ViewReports'
 import ReportView from '../screen/ReportView/ReportView';
@@ -21,16 +23,32 @@ const Tab = createBottomTabNavigator();
 
 function MyStack() {
     return (
-        <Stack.Navigator initialRouteName={"StartScreen"}>
-            <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
-             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Navigator initialRouteName={"Login"}>
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: true}} />
+             
              <Stack.Screen name="ReportView" component={ReportView} options={{ headerShown: false }} />
-             <Stack.Screen name="Home" options={{ headerShown: false }}>
+          <Stack.Screen name="Home" options={{ headerShown: false }}>
                 {props => <MyTabs {...props} />}
-            </Stack.Screen>
+
+
+
+          </Stack.Screen>
         </Stack.Navigator>
     );
 }
+
+function StackLogin() {
+    return (
+        <Stack.Navigator initialRouteName={"Login"}>
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+
+        </Stack.Navigator>
+    );
+}
+
 
 
 function MyTabs() {
