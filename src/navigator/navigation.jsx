@@ -21,6 +21,7 @@ function MyStack() {
         <Stack.Navigator initialRouteName={"StartScreen"}>
             <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+             
              <Stack.Screen name="Home" options={{ headerShown: false }}>
                 {props => <MyTabs {...props} />}
             </Stack.Screen>
@@ -37,11 +38,10 @@ function MyTabs() {
           headerShown: false,
           tabBarShowLabel: false,
         }}
-        tabBar={(props) => <MyTabBar {...props}/>}
-      >
+        tabBar={(props) => <MyTabBar {...props}/>}>
+
         <Tab.Screen name="Inicio" component={Home} options={{ tabBarIcon: 'home-outline' }} />
         <Tab.Screen name="Reporte" component={Reports} options={{ tabBarIcon: 'list-outline' }} />
-        
         
       </Tab.Navigator>
     );
@@ -53,9 +53,11 @@ const TabButton = ({ label, iconName, onPress, isSelected, iconColor  }) => {
     return (
         <TouchableOpacity onPress={onPress} style={styles.tabButton}>
             <View style={isSelected ? styles.selectedButton : styles.button}>
+
                 <View style={isSelected ? styles.selectedIconContainer : styles.iconContainer}>
                     <Ionicons name={iconName} size={isSelected ? 27 : 24 } color={iconColor} />
                 </View>
+                
                 <Text style={isSelected ? styles.selectedLabel : styles.label}>{label}</Text>
             </View>
         </TouchableOpacity>
