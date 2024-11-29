@@ -4,6 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const LopA = require('../login/assets/LoginFondo.jpg');
+const loginUser = require('../../helpers/api_invoker');
+//importar de helper registerrole
+//import createRol from '../../helpers/api_invoker';
 
 //1B3B74
 export default function Login() {
@@ -12,9 +15,35 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
-  const handleLogin = () => {
+  const handleLogin =  async () => {
+    const user = {
+      email: email,
+      password: password,
+    };
+    const userData = await loginUser.loginUser(user);
+
+    
     console.log('Email:', email);
     console.log('Password:', password);
+
+    //si el usuario no existe
+    if (userData.message === 'Usuario no encontrado') {
+      alert('User not found');
+      return;
+    }
+
+    //si la contraseña es incorrecta
+    if (userData.message === 'Contraseña incorrecta') {
+      alert('Incorrect password');
+      return;
+    }
+
+    //si el login es exitoso
+    alert('Login successful');
+
+
+
+
     navigation.navigate('Home');
   };
 
@@ -32,7 +61,7 @@ export default function Login() {
 
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Email | Username"
         value={email}
         onChangeText={setEmail}
         placeholderTextColor="#999"
@@ -65,7 +94,7 @@ export default function Login() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.secondaryButton} onPress={() => alert('Calling EMS')}>
           <Text style={styles.secondaryButtonText}>Call EMS</Text>
-        </TouchableOpacity>
+        </TouchableOpacity >
       </View>
     </ImageBackground>
   );
