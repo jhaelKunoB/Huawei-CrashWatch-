@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 
+import MapView from './components/MapViewComponent'
+
 export default function Maps() {
     return (
         <View style={styles.container}>
@@ -31,6 +33,9 @@ export default function Maps() {
                         <Text style={styles.btnText}>Check Accidents</Text>
                     </TouchableOpacity>
                 </View>
+            </View>
+            <View style ={styles.container}>
+                <MapView/>
             </View>
         </View>
     );

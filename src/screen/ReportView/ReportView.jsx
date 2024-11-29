@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ReportView() {
     const [selectedTab, setSelectedTab] = useState('images'); // Alternar entre "images" y "video"
@@ -9,7 +10,9 @@ export default function ReportView() {
         'https://via.placeholder.com/150',
         'https://via.placeholder.com/150',
         'https://via.placeholder.com/150',
-    ]; // Lista de imágenes de ejemplo
+    ]; // Lista de imágenes de ejemplo'
+
+    const navigation = useNavigation();
 
     return (
         <View style={{ flex: 1 }}>
@@ -17,7 +20,7 @@ export default function ReportView() {
                 <Text style={styles.title}>CrashWatcher</Text>
                 <TouchableOpacity
                     style={styles.btn}
-                    onPress={() => alert('ATRÁS')}
+                    onPress={() => navigation.goBack()}
                 >
                     <Ionicons name="arrow-back-circle-sharp" size={38} color="darkblue" />
                 </TouchableOpacity>
