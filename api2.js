@@ -486,3 +486,13 @@ app.post('/users', async (req, res) => {
         console.log(`Server running on port ${PORT}`);
     });
 
+//getReports
+app.get('/reports', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT ar."id", ar."idReport", t."name",r."description", r."latitude", r."longitude" FROM "AccidentReport" ar INNER JOIN "AccidentType" t ON ar."idAccidentType" = t."id" INNER JOIN "Report" r ON ar."idReport" = r."id" WHERE r."status" = 1');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching InstitutionTypes:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});

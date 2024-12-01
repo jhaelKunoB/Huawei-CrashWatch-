@@ -27,6 +27,7 @@ function MyStack() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Mapa" component={Maps} options={{ headerShown: false }}/>
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: true}} />
              
              <Stack.Screen name="ReportView" component={ReportView} options={{ headerShown: false }} />
