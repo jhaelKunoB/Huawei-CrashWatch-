@@ -78,6 +78,8 @@ app.get('/categories', async (req, res) => {
   }
 });
 
+
+
 // peticion de imagenes de todos los eventos
 app.get('/photos', async (req, res) => {
   try {

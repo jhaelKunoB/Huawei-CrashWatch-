@@ -58,6 +58,7 @@ app.get('/roles', async (req, res) => {
   }
 });
 
+
 app.get('/roles/:id', async (req, res) => {
   const  {id}  = req.params;
   try {
@@ -69,8 +70,6 @@ app.get('/roles/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
 app.post('/roles', async (req, res) => {
   const {name} = req.body;
   if (!name || name.trim() === '') {
@@ -90,8 +89,6 @@ app.post('/roles', async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 });
-
-
 app.delete('/roles/:id', async (req, res) => {
     const  {id}  = req.params;
   
@@ -480,6 +477,90 @@ app.post('/users', async (req, res) => {
         res.status(500).json({ message: 'Error en el servidor' });
         }
     });
+
+
+
+
+
+
+    app.get('/typeAccident', async (req, res) => {
+      try {
+        const result = await pool.query('SELECT * FROM "AccidentType" ');
+        res.json(result.rows);
+      } catch (error) {
+        console.error('Error fetching Roles:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+
+
+
+
+    app.post('/createReport', async (req, res) => {
+      const { description, typeAccident, images, audio, video, latitude, longitude, idUser, idCounty } = req.body;
+      console.log('Reespuesta del Cliente',req.body)
+      // Validaciones previas
+      if (!description || !latitude || !longitude || !idUser || !idCounty || !images || !Array.isArray(images)) {
+        return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados.' });
+      }
+    
+      const client = await pool.connect(); // Obtener el cliente para la transacción
+    
+      try {
+        // Iniciar la transacción
+        await client.query('BEGIN');
+    
+        // Insertar el reporte principal
+        const queryReport = `
+          INSERT INTO "Report" (description, audio, video, latitude, longitude, "idUser", "idCounty")
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          RETURNING id;
+        `;
+        const valuesReport = [description, audio || null, video || null, latitude, longitude, idUser, idCounty];
+        const resultReport = await client.query(queryReport, valuesReport);
+    
+        const reportId = resultReport.rows[0].id; // ID del reporte creado
+    
+        // Insertar imágenes asociadas al reporte
+        const queryImage = `
+          INSERT INTO "Image" (url, "idReport", "idUser")
+          VALUES ($1, $2, $3);
+        `;
+    
+        for (const url of images) {
+          const valuesImage = [url, reportId, idUser];
+          await client.query(queryImage, valuesImage);
+        }
+
+
+
+        const queryType = `
+           INSERT INTO "AccidentReport"("idReport", "idAccidentType")
+           VALUES ($1, $2)
+        `;
+        for(const url of typeAccident ){
+          console.log(url)
+          const valuesType = [reportId, url.id ]
+          await client.query(queryType, valuesType) 
+        }
+    
+        // Confirmar la transacción
+        await client.query('COMMIT');
+    
+        // Responder con un mensaje simple
+        res.status(201).json({ message: 'Reporte creado exitosamente' });
+      } catch (error) {
+        // Si algo falla, revertir la transacción
+        await client.query('ROLLBACK');
+        console.error('Error al crear el reporte:', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+      } finally {
+        // Liberar el cliente
+        client.release();
+      }
+    });
+    
+
 
     const PORT = process.env.PORT || 3005;
     app.listen(PORT, () => {

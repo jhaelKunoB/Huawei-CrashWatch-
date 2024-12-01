@@ -80,6 +80,58 @@ const loginUser = async (user) => {
 }
 
 
+
+const getTypeAccident = async () => {
+    try {
+        const response = await fetch(`${ApiUrl.url}/typeAccident`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Respuesta de la API:', data);
+            return data; // Retorna los datos correctamente
+        } else {
+            // Maneja errores HTTP (códigos como 404, 500, etc.)
+            const errorData = await response.json();
+            console.error('Error de la API:', errorData);
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error al recuperar los datos:', error);
+        throw error; // Lanza el error para manejarlo en la llamada
+    }
+};
+
+
+
+const createReport = async (report) => {
+    console.log('Report: ', report);
+
+    try {
+        const response = await fetch(`${ApiUrl.url}/createReport`, {
+            method: 'POST',
+            headers: {
+                 'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(report),
+        });
+        if (response.ok) {
+             return await response.json();
+        }
+        throw new Error('Error creating report');
+    }
+    catch (error) {
+        console.error('Error creating report:', error);
+        throw error;
+    }
+}
+
+
+
 // exportar los metodos
-module.exports = { createRol, createUser, loginUser };
+module.exports = { createRol, createUser, loginUser, getTypeAccident, createReport};
 

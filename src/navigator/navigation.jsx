@@ -27,6 +27,7 @@ function MyStack() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Report" component={Reports}  options={{headerShown: false}}/>
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: true}} />
              
              <Stack.Screen name="ReportView" component={ReportView} options={{ headerShown: false }} />
@@ -63,7 +64,7 @@ function MyTabs() {
       >
         <Tab.Screen name="View" component={ViewReports} options={{ tabBarIcon: 'document-text-outline' }} />
         <Tab.Screen name="Inicio" component={Home} options={{ tabBarIcon: 'home-outline' }} />
-        <Tab.Screen name="Reporte" component={Reports} options={{ tabBarIcon: 'list-outline' }} />
+        {/* <Tab.Screen name="Reporte" component={Reports} options={{ tabBarIcon: 'list-outline' }} /> */}
         <Tab.Screen name="Mapa" component={Maps} options={{ tabBarIcon: 'map-outline' }} />    
       </Tab.Navigator>
     );

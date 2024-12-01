@@ -95,6 +95,9 @@ export default function Login() {
         <TouchableOpacity style={styles.secondaryButton} onPress={() => alert('Calling EMS')}>
           <Text style={styles.secondaryButtonText}>Call EMS</Text>
         </TouchableOpacity >
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.secondaryButtonText}>Report</Text>
+        </TouchableOpacity >
       </View>
     </ImageBackground>
   );

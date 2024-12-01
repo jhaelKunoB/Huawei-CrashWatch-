@@ -11,7 +11,7 @@ export default function ViewReports() {
                 <Text style={styles.title}>CrashWatcher</Text>
                 <TouchableOpacity
                     style={styles.btn}
-                    onPress={() => alert('Create new report')}
+                    onPress={() => navigator.navigate("Report")}
                 >
                     <Text style={styles.btnText}>Create New Report</Text>
                 </TouchableOpacity>
