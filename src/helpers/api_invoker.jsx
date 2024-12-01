@@ -80,6 +80,35 @@ const loginUser = async (user) => {
 }
 
 
+//getReports
+
+const getReport = async () => {
+
+    try {
+        const response = await fetch(`${ApiUrl.url}/reports`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            // Si la respuesta no es 2xx, lanza un error con el estado de la respuesta
+            const errorData = await response.json();
+            console.error('Error response data:', errorData);
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        // Si la respuesta es exitosa, retorna el JSON
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching report:', error);
+        throw error;
+    }
+}
+
+
+
 
 const getTypeAccident = async () => {
     try {
@@ -133,5 +162,5 @@ const createReport = async (report) => {
 
 
 // exportar los metodos
-module.exports = { createRol, createUser, loginUser, getTypeAccident, createReport};
+module.exports = { createRol, createUser, loginUser, getReport, getTypeAccident, createReport};
 

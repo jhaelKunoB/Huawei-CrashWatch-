@@ -55,6 +55,12 @@ export default function Login() {
     navigation.navigate('ForgotPassword');
   };
 
+  const handleMaps = () => {
+    navigation.navigate('Mapa');
+  };
+
+
+
   return (
     <ImageBackground style={styles.container} source={LopA}>
       <Text style={styles.title}>Crash Watcher</Text>
@@ -92,8 +98,9 @@ export default function Login() {
         <TouchableOpacity style={styles.secondaryButton} onPress={handleForgotPassword}>
           <Text style={styles.secondaryButtonText}>Hospital Location</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => alert('Calling EMS')}>
-          <Text style={styles.secondaryButtonText}>Call EMS</Text>
+       
+        <TouchableOpacity style={styles.secondaryButton} onPress={handleMaps}>
+          <Text style={styles.secondaryButtonText}>Maps</Text>
         </TouchableOpacity >
         <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Home')}>
           <Text style={styles.secondaryButtonText}>Report</Text>
