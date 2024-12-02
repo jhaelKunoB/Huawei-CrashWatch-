@@ -21,11 +21,11 @@ export default function Maps() {
               latitude: report.latitude,
               longitude: report.longitude,
               names: [],
-              descriptions: [],
+              description: report.description
             };
           }
           groupedReports[report.idReport].names.push(report.name);
-          groupedReports[report.idReport].descriptions.push(report.description);
+          
         });
   
         // Preparar los datos finales para mostrar en el mapa
@@ -34,7 +34,7 @@ export default function Maps() {
           latitude: groupedReports[id].latitude,
           longitude: groupedReports[id].longitude,
           name: groupedReports[id].names.join(' - '),
-          description: groupedReports[id].descriptions.join(' / '),
+          description: groupedReports[id].description
         }));
   
         setReportData(formattedReportData);

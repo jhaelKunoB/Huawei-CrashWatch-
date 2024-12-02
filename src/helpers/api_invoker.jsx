@@ -107,8 +107,53 @@ const getReport = async () => {
     }
 }
 
+//reportsNameImageVideo
+
+const getReportsName = async () => {
+
+    try {
+        const response = await fetch(`${ApiUrl.url}/reportsName`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            // Si la respuesta no es 2xx, lanza un error con el estado de la respuesta
+            const errorData = await response.json();
+            console.error('Error response data:', errorData);
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        // Si la respuesta es exitosa, retorna el JSON
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching report:', error);
+        throw error;
+    }
+}
+
+const getReportById = async (id) => {
+    try {
+        const response = await fetch(`${ApiUrl.url}/reportsName/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            return await response.json();
+        }
+        throw new Error(`Error fetching role with ID: ${id}`);
+    } catch (error) {
+        console.error('Error fetching role:', error);
+        throw error;
+    }
+};
 
 
 // exportar los metodos
-module.exports = { createRol, createUser, loginUser, getReport };
+module.exports = { createRol, createUser, loginUser, getReport, getReportsName, getReportById };
 

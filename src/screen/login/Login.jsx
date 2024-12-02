@@ -59,6 +59,10 @@ export default function Login() {
     navigation.navigate('Mapa');
   };
 
+  const handleViewReport = () => {
+    navigation.navigate('ViewReports');
+  };
+
 
 
   return (
@@ -101,6 +105,10 @@ export default function Login() {
        
         <TouchableOpacity style={styles.secondaryButton} onPress={handleMaps}>
           <Text style={styles.secondaryButtonText}>Maps</Text>
+        </TouchableOpacity >
+
+        <TouchableOpacity style={styles.secondaryButton} onPress={handleViewReport}>
+          <Text style={styles.secondaryButtonText}>Vista Reportes</Text>
         </TouchableOpacity >
         
       </View>
