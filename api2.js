@@ -503,12 +503,8 @@ app.get('/reportsName', async (req, res) => {
   try {
     const query = `
       SELECT 
-        ar."id",  
         u."name" || ' ' || u."lastname" AS "full_name", 
         r."id", 
-        i."idReport", 
-        a."id", 
-        ar."idAccidentType", 
         r."latitude", 
         r."longitude", 
         a."name", 
@@ -542,13 +538,9 @@ app.get('/reportsName/:id', async (req, res) => {
   const {id} = req.params
   try {
     const query = `
-      SELECT 
-        ar."id",  
+      SELECT  
         u."name" || ' ' || u."lastname" AS "full_name", 
         r."id", 
-        i."idReport", 
-        a."id", 
-        ar."idAccidentType", 
         r."latitude", 
         r."longitude", 
         a."name", 

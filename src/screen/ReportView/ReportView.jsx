@@ -20,6 +20,8 @@ export default function ReportView() {
             try {
                 const reportData = await getReportById(reportId);
 
+                console.log(reportData)
+
                 if (reportData && reportData.length > 0) {
                     const groupedReport = {
                         names: new Set(),
@@ -27,6 +29,7 @@ export default function ReportView() {
                         images: [],
                         full_name: reportData[0].full_name,
                         video: reportData[0].video,
+                        audio: reportData[0].audio
                     };
 
                     reportData.forEach((report) => {

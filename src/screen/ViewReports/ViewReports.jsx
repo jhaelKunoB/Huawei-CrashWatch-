@@ -18,8 +18,8 @@ export default function ViewReports() {
                     const groupedReports = {};
     
                     reportsData.forEach(report => {
-                        if (!groupedReports[report.idReport]) {
-                            groupedReports[report.idReport] = {
+                        if (!groupedReports[report.id]) {
+                            groupedReports[report.id] = {
                                 names: new Set(),  // Usamos Set para evitar duplicados
                                 description: report.description,
                                 imageUrl: report.url,
@@ -28,7 +28,7 @@ export default function ViewReports() {
                             };
                         }
     
-                        groupedReports[report.idReport].names.add(report.name); // Agregar sin duplicar
+                        groupedReports[report.id].names.add(report.name); // Agregar sin duplicar
                     });
     
                     // Convertir el objeto agrupado a un array
