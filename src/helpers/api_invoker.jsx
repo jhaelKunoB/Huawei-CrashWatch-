@@ -82,10 +82,10 @@ const loginUser = async (user) => {
 
 //getReports
 
-const getReport = async () => {
+const getReportHome = async () => {
 
     try {
-        const response = await fetch(`${ApiUrl.url}/reports`, {
+        const response = await fetch(`${ApiUrl.url}/reportsHome`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -135,8 +135,6 @@ const getTypeAccident = async () => {
     }
 };
 
-
-
 const createReport = async (report) => {
     console.log('Report: ', report);
 
@@ -162,5 +160,5 @@ const createReport = async (report) => {
 
 
 // exportar los metodos
-module.exports = { createRol, createUser, loginUser, getReport, getTypeAccident, createReport};
+module.exports = { createRol, createUser, loginUser, getReportHome, getTypeAccident, createReport};
 

@@ -22,10 +22,16 @@ import SuccessModal from './component/SuccessModal'
 import { useNavigation } from "@react-navigation/native";
 import TypeReport from './component/TypeReport'
 import LocationUser from "./component/LocationUser";
+import * as Location from 'expo-location';
+import Loanding from './component/LoandingPage'
+
+
+
 
 
 export default function Reports() {
   const navigation = useNavigation()
+ 
 
   useEffect(() => {
     const fetchTypeReport = async () => {
@@ -230,14 +236,54 @@ export default function Reports() {
   //----------------------Para la Implementacion de Recuperacion de Localidad---------------------------
   const [useErrorLocaton, setErrorLocation] = useState(false)
   const [useLocation, setLocation] = useState(false)
-  const RecoverLocation = () => {
-    setLocation(true)
+  const [location, setLocationUser] = useState(null);
+
+
+  const RecoverLocation = async () => {
+   
     setErrorLocation(false)
+    setLoanding(true)
+
+    try {
+      // Pide permiso para acceder a la ubicación
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      console.log('Recuperando Ubicacion')
+      if (status !== 'granted') {
+        setError('Permiso de ubicación denegado');
+        return;
+      }
+
+      // Obtiene la ubicación
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+
+       // Recupera la dirección utilizando las coordenadas
+      const [address] = await Location.reverseGeocodeAsync({ latitude, longitude });
+      console.log('Ubicacion Recuperada:', address)
+      const fullAddress = address ? `${address.name}, ${address.city}, ${address.region}, ${address.country}` : 'Dirección no disponible';
+      console.log('Ubicacion Recuperada:', fullAddress)
+
+
+      setLocationUser({ latitude, longitude }); // Actualiza el estado con las coordenadas
+      setLocation(true)
+      setLoanding(false)
+      
+
+    } catch (err) {
+      setError('No se pudo obtener la ubicación: ' + err.message);
+    } finally {
+      setIsLoading(false); // Termina el estado de carga
+      setLoanding(false)
+    }
+
   }
 
-
   //-------------------------------------------------
+  const [useLoanding, setLoanding] = useState(false)
 
+  //------------------------------------------------------
 
   //Para poder Enviar los datos Para el registro
   const [images, setImages] = useState([]);
@@ -246,12 +292,7 @@ export default function Reports() {
   const [audioUri, setAudioUri] = useState()
   const [text, setText] = useState("");
 
-
-
-  const [coordinates, setCoordinates] = useState({
-    latitude: -17.391477,
-    longitude: -66.226111,
-  });
+  //Me faltan estos datos-----------------------------------------------------------------
   const [user, setUser] = useState({
     id: 1,
     username: 'Jhaek'
@@ -267,7 +308,6 @@ export default function Reports() {
       setErrorLocation(true)
       return
     }
-    // Validación
     if (images.length === 0) {
       setErrorImges(true)
       setSelectedOption('Imagenes')
@@ -285,9 +325,8 @@ export default function Reports() {
 
     try {
       setModalVisibleRegis(true);  // Muestra el modal de carga
-
       // Realiza la llamada al servicio para registrar el reporte
-      const report = await registerReport(images, videoUri, audioUri, typeReport, text, coordinates.latitude, coordinates.longitude, user.id, useCounty);
+      const report = await registerReport(images, videoUri, audioUri, typeReport, text, location.latitude, location.longitude, user.id, useCounty);
 
       setModalVisibleRegis(false)  // Oculta el modal de carga
       setModalVisibleSuccess(true)
@@ -603,6 +642,8 @@ export default function Reports() {
         <RegisteringModal isVisible={isModalVisibleRegis} onClose={() => setModalVisibleRegis(false)} />
         <SuccessModal isVisible={isVisibleSuccess} onCloseSuccess={() => setModalVisibleSuccess(false)} />
 
+        <Loanding isVisible = {useLoanding}  onCloseSuccess ={() => setLoanding()} text = {'Recuperando Ubicacion..'}/>
+
       </ScrollView>
     </>
 
@@ -614,14 +655,14 @@ export default function Reports() {
 const styles = StyleSheet.create({
 
   errorText: {
-    color: '#AF0404', // Rojo para resaltar el error
-    fontSize: 14, // Tamaño de texto legible pero no muy grande
-    fontWeight: '500', // Resalta ligeramente el mensaje
-    textAlign: 'center', // Centra el texto
-    marginVertical: 5, // Espaciado vertical
-    paddingHorizontal: 10, // Opcional: Espaciado interno
-    backgroundColor: '#FCEAEA', // Fondo sutil para enfatizar el error
-    borderRadius: 5, // Bordes redondeados
+    color: '#AF0404', 
+    fontSize: 14, 
+    fontWeight: '500',
+    textAlign: 'center',
+    marginVertical: 5, 
+    paddingHorizontal: 10, 
+    backgroundColor: '#FCEAEA', 
+    borderRadius: 5, 
   },
 
   picker: {

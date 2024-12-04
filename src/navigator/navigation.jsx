@@ -16,7 +16,7 @@ import ForgotPassword from '../screen/login/ForgotPassword';
 import Maps from '../screen/maps/Maps'
 import ViewReports from '../screen/ViewReports/ViewReports'
 import ReportView from '../screen/ReportView/ReportView';
-
+import User from '../screen/user/User';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -27,10 +27,11 @@ function MyStack() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="Report" component={Reports}  options={{headerShown: false}}/>
+          <Stack.Screen name="Report" component={Reports}  options={{headerShown: false, presentation: 'modal'}}/>
           <Stack.Screen name="Mapa" component={Maps} options={{ headerShown: false }}/>
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: true}} />
-             
+          <Stack.Screen name="User" component={User} options={{ presentation: 'modal', animationTypeForReplace: 'pop',gestureEnabled: true, }}
+        />
              <Stack.Screen name="ReportView" component={ReportView} options={{ headerShown: false }} />
           <Stack.Screen name="Home" options={{ headerShown: false }}>
                 {props => <MyTabs {...props} />}

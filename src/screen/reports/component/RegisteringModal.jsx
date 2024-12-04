@@ -6,14 +6,17 @@ const RegisteringModal = ({ isVisible }) => {
 
 
     useEffect(() => {
-        if (isVisible) {
-          StatusBar.setBarStyle('light-content'); // Color blanco para el texto de la barra
-          StatusBar.setBackgroundColor('rgba(0, 0, 0, 0.6)'); // Fondo negro para la barra de estado
-        } else {
-          StatusBar.setBarStyle('dark-content'); // Restaurar color de texto a negro cuando el modal se cierre
-          StatusBar.setBackgroundColor('#FFFFFF'); // Restaurar color de fondo blanco
-        }
-      }, [isVisible]);
+      const barStyle = isVisible ? 'light-content' : 'dark-content';
+      const backgroundColor = isVisible ? 'rgba(0, 0, 0, 0.6)' : '#FFFFFF';
+    
+      StatusBar.setBarStyle(barStyle);
+      StatusBar.setBackgroundColor(backgroundColor);
+    }, [isVisible]);
+
+
+
+
+
 
   return (
     <Modal
