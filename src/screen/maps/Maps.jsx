@@ -1,87 +1,97 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Feather from '@expo/vector-icons/Feather';
-import { getReport } from '../../helpers/api_invoker';
+import { getReport, getReportPasado } from '../../helpers/api_invoker';
 import MapViewComponent from './components/MapViewComponent';
+import MapViewHistory from './components/MapViewAntiguaComponent';
 
 export default function Maps() {
-  const [reportData, setReportData] = useState([]);
+  const [activeReports, setActiveReports] = useState([]);
+  const [historicalReports, setHistoricalReports] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [activeMap, setActiveMap] = useState('activeAccidents'); // Controla qué mapa se muestra
 
   useEffect(() => {
-    const getReports = async () => {
-      const reports = await getReport();
-  
-      if (reports && reports.length > 0) {
-        // Agrupar reportes por idReport y combinar la información de nombre y descripción
-        const groupedReports = {};
-  
-        reports.forEach(report => {
-          if (!groupedReports[report.idReport]) {
-            groupedReports[report.idReport] = {
-              latitude: report.latitude,
-              longitude: report.longitude,
-              names: [],
-              descriptions: [],
-            };
-          }
-          groupedReports[report.idReport].names.push(report.name);
-          groupedReports[report.idReport].descriptions.push(report.description);
-        });
-  
-        // Preparar los datos finales para mostrar en el mapa
-        const formattedReportData = Object.keys(groupedReports).map(id => ({
-          id,
-          latitude: groupedReports[id].latitude,
-          longitude: groupedReports[id].longitude,
-          name: groupedReports[id].names.join(' - '),
-          description: groupedReports[id].descriptions.join(' / '),
-        }));
-  
-        setReportData(formattedReportData);
+    const fetchReports = async () => {
+      // Obtener reportes activos
+      const activeData = await getReport();
+      if (activeData && activeData.length > 0) {
+        const groupedReports = groupReports(activeData);
+        setActiveReports(groupedReports);
       }
-  
-      console.log('Respuesta: ', reports);
+
+      // Obtener reportes históricos
+      const historicalData = await getReportPasado();
+      if (historicalData && historicalData.length > 0) {
+        const groupedReports = groupReports(historicalData);
+        setHistoricalReports(groupedReports);
+      }
     };
-  
-    getReports();
+
+    fetchReports();
   }, []);
-  
+
+  // Función para agrupar los reportes
+  const groupReports = (reports) => {
+    const groupedReports = {};
+    reports.forEach((report) => {
+      if (!groupedReports[report.idReport]) {
+        groupedReports[report.idReport] = {
+          latitude: report.latitude,
+          longitude: report.longitude,
+          names: [],
+          description: report.description,
+        };
+      }
+      groupedReports[report.idReport].names.push(report.name);
+    });
+
+    return Object.keys(groupedReports).map((id) => ({
+      id,
+      latitude: groupedReports[id].latitude,
+      longitude: groupedReports[id].longitude,
+      name: groupedReports[id].names.join(' - '),
+      description: groupedReports[id].description,
+    }));
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.TextTitle}>Name</Text>
-        <Text style={styles.TextTitle}>Good morning!</Text>
-      </View>
-
-      <View style={styles.locationContainer}>
-        <Text style={styles.locationText}>
-          <Feather name="map-pin" size={20} color="black" /> Ubicacion
-        </Text>
+        <Text style={styles.TextTitle}>Hello!</Text>
+        <Text style={styles.TextTitle}>Current Location</Text>
       </View>
 
       <View style={styles.buttonContainer}>
-        <View style={styles.button}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => alert('¡Create New Report!')}
-          >
-            <Text style={styles.btnText}>Create New Report</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.button}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => alert('¡Check Accidents!')}
-          >
-            <Text style={styles.btnText}>Check Accidents</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={[
+            styles.btn,
+            activeMap === 'activeAccidents' && styles.activeButton,
+          ]}
+          onPress={() => setActiveMap('activeAccidents')}
+        >
+          <Text style={styles.btnText}>View Accidentes Actives</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.btn,
+            activeMap === 'historyAccidents' && styles.activeButton,
+          ]}
+          onPress={() => setActiveMap('historyAccidents')}
+        >
+          <Text style={styles.btnText}>History Accidents</Text>
+        </TouchableOpacity>
       </View>
-      
-      <View style={styles.container}>
-        <MapViewComponent reportData={reportData} />
-      </View>
+
+      {/* Mostrar el mapa correspondiente */}
+      {activeMap === 'activeAccidents' && (
+        <MapViewComponent
+          reportData={activeReports}
+          onLocationUpdate={(location) => setCurrentLocation(location)}
+        />
+      )}
+      {activeMap === 'historyAccidents' && (
+        <MapViewHistory reportData={historicalReports} />
+      )}
     </View>
   );
 }
@@ -91,14 +101,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 15,
+    padding: 15,
+    alignItems: 'center',
   },
-  locationText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    textAlign: 'right',
-    marginRight: 20,
+  TextTitle: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -106,26 +115,20 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: '#f8f9fa',
   },
-  TextTitle: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
   btn: {
     backgroundColor: '#007bff',
     paddingVertical: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
   },
   btnText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
+  },
+  activeButton: {
+    backgroundColor: '#0056b3', // Diferente color para el botón activo
   },
 });

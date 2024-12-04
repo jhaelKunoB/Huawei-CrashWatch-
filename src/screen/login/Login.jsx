@@ -59,6 +59,10 @@ export default function Login() {
     navigation.navigate('Mapa');
   };
 
+  const handleViewReport = () => {
+    navigation.navigate('ViewReports');
+  };
+
 
 
   return (

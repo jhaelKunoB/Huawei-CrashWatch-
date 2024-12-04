@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, Alert, Text } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Alert } from 'react-native';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
 
@@ -41,6 +41,7 @@ export default function MapViewComponent({ reportData }) {
     // Configurar un intervalo para actualizar la ubicación cada 5 minutos (300000 ms)
     const intervalId = setInterval(() => {
       getCurrentLocation();
+      console.log("hola")
     }, 300000); // 5 minutos
 
     // Limpiar el intervalo cuando el componente se desmonte
@@ -58,7 +59,7 @@ export default function MapViewComponent({ reportData }) {
         );
 
         if (distance <= 250) { // Distancia en metros
-          Alert.alert('Advertencia', `¡Cuidado! Estás cerca de un accidente (${report.name}) intenta tomar otra ruta`);
+          Alert.alert('Advertencia', `¡Ten Cuidado! zona con accidentes ocurridos ¡Ten Precaucion! (${report.name})`);
         }
       });
     }
@@ -106,46 +107,34 @@ export default function MapViewComponent({ reportData }) {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Mostrar la latitud y longitud actuales */}
-      <View style={styles.coordinatesContainer}>
-        <Text style={styles.coordinatesText}>
-          Latitude: {currentLocation.latitude.toFixed(6)} | Longitude: {currentLocation.longitude.toFixed(6)}
-        </Text>
-      </View>
+    <MapView
+      style={styles.map}
+      initialRegion={{
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      }}
+      showsUserLocation={true}
+      customMapStyle={customMapStyle}
+    >
+      <Circle
+        center={currentLocation}
+        radius={250}
+        strokeColor="rgba(0,122,255,0.5)"
+        fillColor="rgba(0,122,255,0.2)"
+      />
 
-      {/* Mapa con marcadores */}
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-        showsUserLocation={true}
-        customMapStyle={customMapStyle}
-      >
-        {/* Círculo de proximidad */}
-        <Circle
-          center={currentLocation}
-          radius={250}
-          strokeColor="rgba(0,122,255,0.5)"
-          fillColor="rgba(0,122,255,0.2)"
+      {reportData.map((report) => (
+        <Marker
+          key={report.id}
+          coordinate={{ latitude: report.latitude, longitude: report.longitude }}
+          title={report.name}
+          description={report.description}
+          icon={getIconByName(report.name)} // Cambia el ícono dinámicamente
         />
-
-        {/* Marcadores de reportes */}
-        {reportData.map((report) => (
-          <Marker
-            key={report.id}
-            coordinate={{ latitude: report.latitude, longitude: report.longitude }}
-            title={report.name}
-            description={report.description}
-            icon={getIconByName(report.name)} // Cambia el ícono dinámicamente
-          />
-        ))}
-      </MapView>
-    </View>
+      ))}
+    </MapView>
   );
 }
 
@@ -172,11 +161,7 @@ const customMapStyle = [
   },
 ];
 
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   map: {
     width: '100%',
     height: '100%',
@@ -185,25 +170,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  coordinatesContainer: {
-    padding: 10,
-    backgroundColor: '#fff',
-    zIndex: 1,
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    right: 10,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  coordinatesText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
-    textAlign: 'center',
   },
 });
