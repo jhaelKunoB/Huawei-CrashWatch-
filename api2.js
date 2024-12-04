@@ -489,7 +489,7 @@ app.post('/users', async (req, res) => {
 //getReports
 app.get('/reports', async (req, res) => {
   try {
-    const result = await pool.query('SELECT ar."id", ar."idReport", t."name",r."description", r."latitude", r."longitude" FROM "AccidentReport" ar INNER JOIN "AccidentType" t ON ar."idAccidentType" = t."id" INNER JOIN "Report" r ON ar."idReport" = r."id" WHERE r."status" != 0');
+    const result = await pool.query('SELECT ar."id", ar."idReport", t."name",r."description", r."latitude", r."longitude" FROM "AccidentReport" ar INNER JOIN "AccidentType" t ON ar."idAccidentType" = t."id" INNER JOIN "Report" r ON ar."idReport" = r."id" WHERE r."status" = 2');
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching InstitutionTypes:', error);
@@ -523,7 +523,7 @@ app.get('/reportsName', async (req, res) => {
       INNER JOIN 
         "AccidentType" a ON ar."idAccidentType" = a."id"
       WHERE 
-        r."status" != 0
+        r."status" = 2
     `;
     const result = await pool.query(query);
     res.json(result.rows);
@@ -559,7 +559,7 @@ app.get('/reportsName/:id', async (req, res) => {
       INNER JOIN 
         "AccidentType" a ON ar."idAccidentType" = a."id"
       WHERE 
-        r."status" != 0 AND r."id" = $1
+        r."status" = 2 AND r."id" = $1
     `;
     const result = await pool.query(query,[id]);
     res.json(result.rows);
