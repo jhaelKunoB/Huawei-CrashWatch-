@@ -497,6 +497,16 @@ app.get('/reports', async (req, res) => {
   }
 });
 
+app.get('/reportsPasado', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT ar."id", ar."idReport", t."name",r."description", r."latitude", r."longitude" FROM "AccidentReport" ar INNER JOIN "AccidentType" t ON ar."idAccidentType" = t."id" INNER JOIN "Report" r ON ar."idReport" = r."id" WHERE r."status" = 3');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching InstitutionTypes:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //getReportsName
 
 app.get('/reportsName', async (req, res) => {
