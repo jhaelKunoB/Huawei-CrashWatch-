@@ -4,21 +4,88 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const pool = require('./server');
 const userRoutes = require('./endpoints/user/userRoutes');
-
-
 require('dotenv').config();
-
 const app = express();
-
 app.use(cors());
-
 app.use(express.json({ limit: '10mb' }));
-
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 
 
-app.use('/userl', userRoutes);
+//app.use('/userl', userRoutes);
+
+
+
+app.post('/userCreate', async (req, res) => {
+  try {
+    console.log('Body:', req.body);
+
+    const { name, lastName, email, ci, phone, username, password, address, latitude, longitude, idCounty, idRol } = req.body;
+
+    // Validación de campos requeridos
+    if (!name || !lastName || !email || !ci || !phone || !username || !password || !latitude || !longitude || !idCounty || !idRol || !address) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+
+    // Hash de la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Query SQL
+    const query = 'INSERT INTO "User" (name, lastname, email, ci, phone, username, password, address, latitude, longitude, "idCounty", "idRol") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *';
+    const result = await pool.query(query, [name, lastName, email, ci, phone, username, hashedPassword, address, latitude, longitude, idCounty, idRol]);
+
+    // Respuesta exitosa
+    return res.status(201).json(result.rows[0]); // Usar return para evitar la ejecución de código posterior
+  } catch (error) {
+    console.error('Error creating user:', error);
+
+    // Evitar múltiples respuestas en caso de error
+    if (!res.headersSent) {  // Verifica si ya se han enviado cabeceras
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+});
+
+
+
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const query = 'SELECT * FROM "User" WHERE email = $1 OR username = $1';
+    const result = await pool.query(query, [email]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    const user = result.rows[0];
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
+    }
+
+    // Solo enviar una respuesta exitosa (status 200)
+    return res.status(200).json({
+      message: 'Login exitoso',
+      user: {
+        id: user.id,
+        name: user.name,
+        lastname: user.lastname,
+        email: user.email,
+        date_registration: user.date_registration,
+        status: user.status,
+      },
+    });
+
+  } catch (error) {
+    console.error('Error al autenticar usuario:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
+
 
 
 // const pool = new Pool({
@@ -348,6 +415,9 @@ app.post('/users', async (req, res) => {
       res.status(500).json({ message: 'Error en el servidor' });
     }
   });
+
+
+
 
 
   app.put('/users/:id', async (req, res) => {
@@ -688,7 +758,7 @@ app.get('/reportsName/:id', async (req, res) => {
       INNER JOIN 
         "AccidentType" a ON ar."idAccidentType" = a."id"
       WHERE 
-        r."status" = 2 AND r."id" = $1
+         r."id" = $1
     `;
     const result = await pool.query(query,[id]);
     res.json(result.rows);
@@ -697,3 +767,4 @@ app.get('/reportsName/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+

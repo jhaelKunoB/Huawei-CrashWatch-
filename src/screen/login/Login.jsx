@@ -1,114 +1,84 @@
 import React, { useState } from 'react';
-import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, Image, ImageBackground } from 'react-native';
+import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoandingPage from './component/LoandingPage';
 
 const LopA = require('../login/assets/LoginFondo.jpg');
 const loginUser = require('../../helpers/api_invoker');
-//importar de helper registerrole
-//import createRol from '../../helpers/api_invoker';
 
-//1B3B74
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
+  const [useLoanding, setLoanding] = useState(false);
 
-  const handleLogin =  async () => {
-    const user = {
-      email: email,
-      password: password,
-    };
-    const userData = await loginUser.loginUser(user);
+  const handleLogin = async () => {
+    try {
+      setLoanding(true);
+      const user = { email, password };
+      const userData = await loginUser.loginUser(user);
 
-    
-    console.log('Email:', email);
-    console.log('Password:', password);
+      if (userData.message === 'Usuario no encontrado') {
+        alert('User not found');
+        setLoanding(false);
+        return;
+      }
 
-    //si el usuario no existe
-    if (userData.message === 'Usuario no encontrado') {
-      alert('User not found');
-      return;
+      if (userData.message === 'Contraseña incorrecta') {
+        alert('Incorrect password');
+        return;
+      }
+
+      await AsyncStorage.setItem('user', JSON.stringify(userData.user));
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Error login:', error);
+    } finally {
+      setLoanding(false);
     }
-
-    //si la contraseña es incorrecta
-    if (userData.message === 'Contraseña incorrecta') {
-      alert('Incorrect password');
-      return;
-    }
-
-    //si el login es exitoso
-    alert('Login successful');
-
-
-
-
-    navigation.navigate('Home');
   };
 
-  const handleRegister = () => {
-    navigation.navigate('Register');
-  };
-
-  const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
-  };
-
-  const handleMaps = () => {
-    navigation.navigate('Mapa');
-  };
-
-  const handleViewReport = () => {
-    navigation.navigate('ViewReports');
-  };
-
-
+  const handleRegister = () => navigation.navigate('Register');
 
   return (
     <ImageBackground style={styles.container} source={LopA}>
-      <Text style={styles.title}>Crash Watcher</Text>
+      <View style={styles.overlay}>
+        <Text style={styles.title}>𝐂𝐫𝐚𝐬𝐡 𝐖𝐚𝐭𝐜𝐡</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email | Username"
-        value={email}
-        onChangeText={setEmail}
-        placeholderTextColor="#999"
-      />
-
-      <View style={styles.passwordContainer}>
         <TextInput
-          style={styles.inputPassword}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
+          style={styles.input}
+          placeholder="Email | Username"
+          value={email}
+          onChangeText={setEmail}
           placeholderTextColor="#999"
-          secureTextEntry={!showPassword}
         />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="#333" />
+
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.inputPassword}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            placeholderTextColor="#999"
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="#555" />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Login</Text>
-      </TouchableOpacity>
-
-      <View style={styles.actionButtons}>
         <TouchableOpacity style={styles.secondaryButton} onPress={handleRegister}>
           <Text style={styles.secondaryButtonText}>Register</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={handleForgotPassword}>
-          <Text style={styles.secondaryButtonText}>Hospital Location</Text>
-        </TouchableOpacity>
-       
-        <TouchableOpacity style={styles.secondaryButton} onPress={handleMaps}>
-          <Text style={styles.secondaryButtonText}>Maps</Text>
-        </TouchableOpacity >
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.secondaryButtonText}>Report</Text>
-        </TouchableOpacity >
+
+        <LoandingPage isVisible={useLoanding} onCloseSuccess={setLoanding} />
       </View>
     </ImageBackground>
   );
@@ -118,38 +88,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
-    backgroundColor: '#acf',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Fondo translúcido
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: 36,
+    fontWeight: '600',
+    color: '#1B3B74',
     textAlign: 'center',
     marginBottom: 40,
-    textShadowColor: '#000',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 5,
   },
   input: {
     height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 25,
-    marginBottom: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginBottom: 15,
+    paddingHorizontal: 15,
     fontSize: 16,
+    backgroundColor: '#fff',
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 25,
-    paddingHorizontal: 16,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 20,
     backgroundColor: '#fff',
-    marginBottom: 12,
   },
   inputPassword: {
     flex: 1,
@@ -157,46 +128,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   loginButton: {
-    backgroundColor: '#00094b',
+    backgroundColor: '#1B3B74',
     paddingVertical: 15,
-    borderRadius: 25,
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    marginBottom: 20,
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
-  actionButtons: {
-    marginTop: 30,
-    alignItems: 'center',
+    fontWeight: '600',
   },
   secondaryButton: {
-
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
+    backgroundColor: '#eaeaea',
     paddingVertical: 15,
-    paddingHorizontal: 20,
-    backgroundColor: '#1d1d1d',
-    borderRadius: 25,
-    width: '50%',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    borderRadius: 10,
+    alignItems: 'center',
   },
   secondaryButtonText: {
-    color: '#fff',
+    color: '#1B3B74',
     fontSize: 16,
+    fontWeight: '600',
   },
 });
-

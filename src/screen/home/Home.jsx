@@ -6,22 +6,17 @@ import CaruselCarts from './component/CaruselCarst';
 import { getReportHome } from '../../helpers/api_invoker';
 import { useFocusEffect } from '@react-navigation/native';
 import ReportCard from './component/ReportCard';
-
-
 import { useNavigation } from '@react-navigation/native';
-
-
 import BottomModal from './component/BottomModal';
 import * as Location from 'expo-location';
-
-
-
+import AsyncStorage  from '@react-native-async-storage/async-storage';
+import PopUpMenu from './component/PopUp';
 
 
 export default function Home() {
   const navigation = useNavigation();
   const [useReports, setReports] = useState([]);
-
+  const [user, setUser] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
 
 
@@ -43,6 +38,10 @@ export default function Home() {
       const getReports = async () => {
         try {
           const response = await getReportHome();
+          const userString = await AsyncStorage.getItem('user');
+          const user = userString ? JSON.parse(userString) : null;
+          setUser(user);
+          console.info('User:', user);
 
           for (const report of response) {
             const address = await getAddressFromCoordinates(report.latitude, report.longitude);
@@ -51,6 +50,7 @@ export default function Home() {
           
           setReports(response);
           console.log('Response:', response);
+
         } catch (error) {
           console.error('Error getting reports:', error);
         }
@@ -70,11 +70,11 @@ export default function Home() {
   const getGreeting = () => {
     const currentHour = new Date().getHours();
     if (currentHour < 12) {
-      return 'Buenos Días';
+      return 'Good Morning';
     } else if (currentHour < 18) {
-      return 'Buenas Tardes';
+      return 'Good Afternoon';
     } else {
-      return 'Buenas Noches';
+      return 'Good Evening';
     }
   };
 
@@ -83,6 +83,16 @@ export default function Home() {
     setModalVisible(!isModalVisible);
   };
 
+  const deleteUser = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      console.log('User deleted');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  }
+
 
   return (
     <View style={{flex:1}}>
@@ -90,18 +100,16 @@ export default function Home() {
       {/* Encabezado */}
       <View style={styles.header}>
         <Text style={styles.titleText}>𝐂𝐫𝐚𝐬𝐡 𝐖𝐚𝐭𝐜𝐡</Text>
-        <TouchableOpacity style={styles.userIcon} onPress={toggleModal} >
-           <FontAwesome name="bars" size={23} color="#666"  />
-        </TouchableOpacity>
+        <View style={styles.userIcon}>
+          <PopUpMenu />
+        </View>
       </View>
-   
    
       <ScrollView style={styles.container}>
 
-
         {/* Mensajes */}
         <View style={styles.messages}>
-          <Text style={styles.greeting}>Hi Jenifer!</Text>
+          <Text style={styles.greeting}>Hi {user ? user.name : ""}!</Text>
           <Text style={styles.subGreeting}>{getGreeting()}</Text>
         </View>
 
@@ -114,9 +122,9 @@ export default function Home() {
 
         {/* Sección de accidentes nuevos */}
         <View style={styles.newAccidentsSection}>
-          <Text style={{ fontSize: 20, fontWeight: '300' }}>Accidentes Recientes</Text>
+          <Text style={{ fontSize: 20, fontWeight: '300' }}>Recent Accidents</Text>
           <TouchableOpacity>
-            <Text style={styles.linkText}>Ver Accidentes</Text>
+            <Text style={styles.linkText}>View Accidents</Text>
           </TouchableOpacity>
         </View>
 

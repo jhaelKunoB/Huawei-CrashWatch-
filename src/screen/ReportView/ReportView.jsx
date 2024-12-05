@@ -46,6 +46,7 @@ export default function ReportView() {
     useEffect(() => {
         const fetchReportDetails = async () => {
             try {
+                console.log(reportId)
                 const reportData = await getReportById(reportId);
 
                 if (reportData && reportData.length > 0) {
@@ -116,13 +117,17 @@ export default function ReportView() {
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.header}>
-                <Text style={styles.title}>CrashWatcher</Text>
+
                 <TouchableOpacity
                     style={styles.btn}
-                    onPress={() => navigation.navigate('Report')}
+                    onPress={() => navigation.goBack()}
                 >
                     <Ionicons name="arrow-back-circle-sharp" size={38} color="darkblue" />
                 </TouchableOpacity>
+
+
+                <Text style={styles.title}>CrashWatcher</Text>
+
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>

@@ -19,14 +19,28 @@
       }
     },
     "android": {
+      "package": "com.crashwatch.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyClUE7K-Ytz6duQ6wLYFDNNSJyQSnFFgks"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d3edcfa8-8a6d-45af-823f-8ba660d5b990"
+      }
     }
   }
 }

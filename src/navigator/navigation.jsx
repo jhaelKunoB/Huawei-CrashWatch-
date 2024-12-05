@@ -21,9 +21,9 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 
-function MyStack() {
+function MyStack({user1}) {
     return (
-        <Stack.Navigator initialRouteName={"Login"}>
+         <Stack.Navigator initialRouteName={user1 ? "Home" : "Login"}>
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={Register} />
@@ -68,7 +68,7 @@ function MyTabs() {
     >
       <Tab.Screen name="View" component={ViewReports} options={{ tabBarIcon: 'document-text-outline' }} />
       <Tab.Screen name="Inicio" component={Home} options={{ tabBarIcon: 'home-outline' }} />
-      <Tab.Screen name="Reporte" component={Reports} options={{ tabBarIcon: 'list-outline' }} />
+      {/* <Tab.Screen name="Reporte" component={Reports} options={{ tabBarIcon: 'list-outline' }} /> */}
       <Tab.Screen name="Mapa" component={Maps} options={{ tabBarIcon: 'map-outline' }} />
     </Tab.Navigator>
   );
@@ -98,7 +98,7 @@ const MyTabBar = ({ state, descriptors, navigation }) => {
         const label = options.tabBarLabel !== undefined ? options.tabBarLabel : route.name;
         const iconName = options.tabBarIcon !== undefined ? options.tabBarIcon : 'home-outline';
         const isSelected = state.index === index;
-        const iconColor = isSelected ? 'red' : '#fff';
+        const iconColor = isSelected ? '#1C325B' : '#fff';
 
         const onPress = () => {
           const event = navigation.emit({
@@ -130,10 +130,10 @@ const MyTabBar = ({ state, descriptors, navigation }) => {
 
 
 
-const Navigation = () => {
+const Navigation = ({user1}) => {
   return (
     <NavigationContainer>
-      <MyStack />
+      <MyStack user1={user1}/>
     </NavigationContainer>
   );
 }
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     height: 65,
-    backgroundColor: 'red',
+    backgroundColor: '#1C325B',
     borderTopColor: '#ddd',
     justifyContent: 'space-around',
     paddingBottom: 10,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     borderWidth: 1,
-    borderColor: 'red'
+    borderColor: 'black'
   },
   iconContainer: {
     justifyContent: 'center',

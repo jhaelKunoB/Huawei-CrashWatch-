@@ -27,10 +27,12 @@ import Loanding from './component/LoandingPage'
 
 
 
-
-
 export default function Reports() {
   const navigation = useNavigation()
+  const [user, setUser] = useState({
+    id: 1,
+    username: 'Jhaek'
+  })
  
 
   useEffect(() => {
@@ -38,6 +40,9 @@ export default function Reports() {
       try {
         const typeReport12 = await getTypeAccident(); // Espera a que la promesa se resuelva
         setAllReport(typeReport12)
+        const userString = await AsyncStorage.getItem('user');
+        const user = userString ? JSON.parse(userString) : null;
+        setUser(user);
       } catch (error) {
         console.error('Error al recuperar el reporte:', error); // Manejo de errores
       }
@@ -293,10 +298,6 @@ export default function Reports() {
   const [text, setText] = useState("");
 
   //Me faltan estos datos-----------------------------------------------------------------
-  const [user, setUser] = useState({
-    id: 1,
-    username: 'Jhaek'
-  })
   const [useCounty, setCounty] = useState(1)
 
  

@@ -1,6 +1,5 @@
 // importamos la url
 import ApiUrl from "./api_url";
-
 // metodo asyncrono que recibe Un objeto Rol y manda a la IP la peticion POST
 
 const createRol = async (rol) => {
@@ -30,10 +29,7 @@ const createUser = async (user) => {
     console.log('User: ', user);
 
     try {
-        const response = await fetch(`${ApiUrl.url}/user`, {
-        //const response = await fetch(`http://
-        //const response = await fetch(`http://
-        //const response = await fetch(`http://
+        const response = await fetch(`${ApiUrl.url}/userCreate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,14 +47,13 @@ const createUser = async (user) => {
     }
 }
 
+
+
 const loginUser = async (user) => {
     console.log('User: ', user);
 
     try {
-        const response = await fetch(`${ApiUrl.url}/userl/login`, {
-        //const response = await fetch(`http://
-        //const response = await fetch(`http://
-        //const response = await fetch(`http://
+        const response = await fetch(`${ApiUrl.url}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

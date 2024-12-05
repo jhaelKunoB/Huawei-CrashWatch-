@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import LottieView from 'lottie-react-native';
+import { useNavigation } from '@react-navigation/native';
 const { width } = Dimensions.get('window'); // Obtiene el ancho de la pantalla
 
+
 const ReportCard = ({ report }) => {
+  navigator = useNavigation();
   const [scale] = React.useState(new Animated.Value(1));
 
   const handlePressIn = () => {
@@ -27,6 +30,11 @@ const ReportCard = ({ report }) => {
     setShowFullDescription(!showFullDescription);
   };
 
+  const reportId = (id) => {
+    console.log('Report ID:', id);
+    navigator.navigate("ReportView", { reportId: id })
+  }
+
   const isDescriptionLong = report.description.length > maxDescriptionLength;
   const descriptionToShow = showFullDescription
     ? report.description
@@ -37,7 +45,7 @@ const ReportCard = ({ report }) => {
       style={styles.card}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      onPress={() => alert(`Detalles del incidente: ${report.name}`)}
+      onPress={() => navigator.navigate("ReportView", { reportId: report.id})}
     >
       <Animated.View style={[styles.cardContainer, { transform: [{ scale }] }]}>
         {/* Contenedor para el avatar y nombre */}

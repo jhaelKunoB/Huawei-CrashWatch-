@@ -56,7 +56,7 @@ export default function ViewReports() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>CrashWatcher</Text>
+                <Text style={styles.title}>𝐂𝐫𝐚𝐬𝐡𝐖𝐚𝐭𝐜𝐡</Text>
                 <TouchableOpacity
                     style={styles.btn}
                     onPress={() => navigator.navigate("Report")}
