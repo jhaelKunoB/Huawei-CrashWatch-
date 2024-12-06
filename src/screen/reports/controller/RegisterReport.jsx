@@ -14,6 +14,7 @@ const registerReport = async (images, videoUri, audioUrl, typeReport, text, lati
     const UrlImages = await uploadImages(images);
     console.log('URLs de las imágenes subidas:', UrlImages);
 
+    
     // Verificar si el video existe y tiene un archivo
     let UrlVideo = null;
     if (videoUri != null)  {

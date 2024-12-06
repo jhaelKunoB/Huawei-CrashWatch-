@@ -6,6 +6,12 @@ import * as Location from 'expo-location';
 const autoChoque = require('../assets/choquePin.png');
 const peatonAtropello = require('../assets/peatonChoquePin.png');
 
+
+
+const mapHome = require('../assets/mapHomePin.png');
+const motoPin = require('../assets/motoPin.png');
+
+
 export default function MapViewComponent({ reportData }) {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -101,6 +107,10 @@ export default function MapViewComponent({ reportData }) {
       return peatonAtropello;
     } else if (name.includes('Choque entre vehículos')) {
       return autoChoque;
+    } else if (name.includes('Incendios en el hogar')) {
+      return mapHome;
+    } else if (name.includes('Colisión con motocicleta')) {
+      return motoPin;
     }
     return null;
   };

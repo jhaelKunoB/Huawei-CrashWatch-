@@ -24,7 +24,7 @@ import TypeReport from './component/TypeReport'
 import LocationUser from "./component/LocationUser";
 import * as Location from 'expo-location';
 import Loanding from './component/LoandingPage'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Reports() {
@@ -43,6 +43,7 @@ export default function Reports() {
         const userString = await AsyncStorage.getItem('user');
         const user = userString ? JSON.parse(userString) : null;
         setUser(user);
+        console.log("Usuario de Report: ",user)
       } catch (error) {
         console.error('Error al recuperar el reporte:', error); // Manejo de errores
       }
@@ -354,7 +355,7 @@ export default function Reports() {
         <Text style={styles.tittle}>New Report</Text>
         </View>
         
-        <TouchableOpacity style={styles.minimalistButton} onPress={reportRegister}>
+        <TouchableOpacity style={styles.minimalistButton} onPress={() => reportRegister()}>
           <Text style={styles.buttonText}>Enviar Reporte</Text>
         </TouchableOpacity>
       </View>
